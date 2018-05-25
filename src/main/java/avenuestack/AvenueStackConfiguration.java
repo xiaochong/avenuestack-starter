@@ -47,6 +47,11 @@ public class AvenueStackConfiguration {
     protected AvenueStackImpl avenueStack() {
         try {
             AvenueStackImpl4Spring a = new AvenueStackImpl4Spring();
+            String profile = env.getProperty("spring.profiles.active");
+            if (profile == null || profile.isEmpty()) {
+                profile = "default";
+            }
+            a.setProfile(profile);
             a.setEnv(env);
             String appName = avenueStackProperties.getAppName();
             a.setDataDir(Paths.get(avenueStackProperties.getDataDir(), appName).toAbsolutePath().toString());
