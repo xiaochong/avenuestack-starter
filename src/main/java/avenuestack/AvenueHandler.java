@@ -42,14 +42,14 @@ public class AvenueHandler implements RequestReceiver {
         int msgId = request.getMsgId();
         String msgKey = codeMapping.get(getKey(String.valueOf(serviceId), String.valueOf(msgId)));
         if (msgKey == null) {
-            logger.error("avenue message[{}.{}] not found in conf", serviceId, msgId);
-            avenueStack.sendResponse(-10242405, null, request);
+            logger.error("avenue message[{}.{}] not definition in avenue_conf", serviceId, msgId);
+            avenueStack.sendResponse(ErrorCodes.SERVICE_NOT_FOUND, null, request);
             return;
         }
         MessageBean messageBean = messageBeans.get(msgKey);
         if (messageBean == null) {
             logger.error("avenue message[{}] not implements", msgKey);
-            avenueStack.sendResponse(-10242405, null, request);
+            avenueStack.sendResponse(ErrorCodes.SERVICE_NOT_FOUND, null, request);
             return;
         }
         try {
@@ -60,6 +60,7 @@ public class AvenueHandler implements RequestReceiver {
     }
 
     @PostConstruct
+    @SuppressWarnings("unchecked")
     public void init() throws Exception {
         // init RequestReceiver
         avenueStack.setRequestReceiver(this);
@@ -93,8 +94,6 @@ public class AvenueHandler implements RequestReceiver {
                 codeMapping.put(getKey(srvId.getValue(), msgId.getValue()), getKey(srvName.getValue(), msgName.getValue()));
             }
         }
-        logger.debug("messageBeans------------->" + messageBeans);
-        logger.debug("codeMapping------------->" + codeMapping);
     }
 
     private String getKey(String srv, String msg) {
