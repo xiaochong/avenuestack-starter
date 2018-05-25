@@ -1,6 +1,9 @@
 package avenuestack;
 
+import avenuestack.impl.netty.AvenueStackImpl;
 import avenuestack.impl.netty.AvenueStackImpl4Spring;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +23,8 @@ import java.nio.file.Paths;
 @EnableConfigurationProperties(AvenueStackProperties.class)
 public class AvenueStackConfiguration {
 
+    private final Logger logger = LoggerFactory.getLogger(AvenueStackConfiguration.class);
+
     private final Environment env;
     private final AvenueStackProperties avenueStackProperties;
     private final ResourcePatternResolver resourcePatternResolver;
@@ -34,8 +39,8 @@ public class AvenueStackConfiguration {
     }
 
 
-    @Bean
-    protected AvenueStack avenueStack() {
+    @Bean(destroyMethod = "close")
+    protected AvenueStackImpl avenueStack() {
         try {
             AvenueStackImpl4Spring a = new AvenueStackImpl4Spring();
             a.setEnv(env);
@@ -49,10 +54,18 @@ public class AvenueStackConfiguration {
                 }
             }
             a.init();
+            a.setRequestReceiver(avenueHandler());
+            a.start();
+            logger.info(appName + " started");
             return a;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    @Bean
+    protected AvenueHandler avenueHandler() {
+        return new AvenueHandler();
     }
 
 }
