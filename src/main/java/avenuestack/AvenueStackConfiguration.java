@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -27,14 +28,17 @@ public class AvenueStackConfiguration {
 
     private final Environment env;
     private final AvenueStackProperties avenueStackProperties;
+    private final ApplicationContext applicationContext;
     private final ResourcePatternResolver resourcePatternResolver;
 
-    public AvenueStackConfiguration(Environment env, AvenueStackProperties avenueStackProperties, ResourcePatternResolver resourcePatternResolver) {
+    public AvenueStackConfiguration(Environment env, AvenueStackProperties avenueStackProperties, ApplicationContext applicationContext, ResourcePatternResolver resourcePatternResolver) {
         Assert.notNull(env, "env must be not null!");
         Assert.notNull(avenueStackProperties, "avenueStackProperties must be not null!");
+        Assert.notNull(applicationContext, "applicationContext must be not null!");
         Assert.notNull(resourcePatternResolver, "resourcePatternResolver must be not null!");
         this.env = env;
         this.avenueStackProperties = avenueStackProperties;
+        this.applicationContext = applicationContext;
         this.resourcePatternResolver = resourcePatternResolver;
     }
 
@@ -54,7 +58,6 @@ public class AvenueStackConfiguration {
                 }
             }
             a.init();
-            a.setRequestReceiver(avenueHandler());
             a.start();
             logger.info(appName + " started");
             return a;
@@ -65,7 +68,7 @@ public class AvenueStackConfiguration {
 
     @Bean
     protected AvenueHandler avenueHandler() {
-        return new AvenueHandler();
+        return new AvenueHandler(applicationContext, avenueStack());
     }
 
 }
