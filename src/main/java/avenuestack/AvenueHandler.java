@@ -42,20 +42,21 @@ public class AvenueHandler implements RequestReceiver {
         int msgId = request.getMsgId();
         String msgKey = codeMapping.get(getKey(String.valueOf(serviceId), String.valueOf(msgId)));
         if (msgKey == null) {
-            logger.error("avenue message[{}.{}] not definition in avenue_conf", serviceId, msgId);
+            logger.warn("avenue message[{}.{}] not definition in avenue_conf", serviceId, msgId);
             avenueStack.sendResponse(ErrorCodes.SERVICE_NOT_FOUND, null, request);
             return;
         }
         MessageBean messageBean = messageBeans.get(msgKey);
         if (messageBean == null) {
-            logger.error("avenue message[{}] not implements", msgKey);
+            logger.warn("avenue message[{}] not implements", msgKey);
             avenueStack.sendResponse(ErrorCodes.SERVICE_NOT_FOUND, null, request);
             return;
         }
         try {
             messageBean.getMethod().invoke(messageBean.getBean(), request);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+            logger.error("avenue message[{}] invoke error:{}", msgKey, e.getMessage(), e);
+            avenueStack.sendResponse(ErrorCodes.INTERNAL_ERROR, null, request);
         }
     }
 
