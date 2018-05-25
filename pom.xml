@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <avenuestack.version>1.0.8</avenuestack.version>
     </properties>
 
     <dependencies>
@@ -35,9 +36,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>avenuestack</groupId>
+            <groupId>com.github.xiaochong</groupId>
             <artifactId>avenuestack</artifactId>
-            <version>1.0.8</version>
+            <version>${avenuestack.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,11 +46,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>inner</id>
-            <url>http://192.168.109.91:8081/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
 </project>
