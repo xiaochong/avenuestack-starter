@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<parameters>
+
+    <ThreadNum>1</ThreadNum>
+    <QueueSize>10000</QueueSize>
+
+    <SapPort>6451</SapPort>
+
+    <SosList>
+        <ServiceId>100</ServiceId>
+        <ServerAddr>127.0.0.1:6451</ServerAddr>
+    </SosList>
+</parameters>
+
