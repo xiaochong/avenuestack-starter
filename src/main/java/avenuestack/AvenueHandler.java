@@ -10,7 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,10 @@ public class AvenueHandler implements RequestReceiver {
         SAXReader saxReader = new SAXReader();
         saxReader.setEncoding("UTF-8");
         for (String xmlFile : avenueXmlFiles) {
-            Element srv = saxReader.read(new FileReader(xmlFile)).getRootElement();
+            Element srv;
+            try (InputStream inputStream = applicationContext.getResource(xmlFile).getInputStream()) {
+                srv = saxReader.read(new InputStreamReader(inputStream)).getRootElement();
+            }
             Attribute srvId = srv.attribute("id");
             Attribute srvName = srv.attribute("name");
             List<Element> messages = srv.selectNodes("message");

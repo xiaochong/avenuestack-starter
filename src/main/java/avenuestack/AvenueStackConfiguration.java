@@ -57,7 +57,8 @@ public class AvenueStackConfiguration {
             a.setDataDir(Paths.get(avenueStackProperties.getDataDir(), appName).toAbsolutePath().toString());
             Resource[] resources = resourcePatternResolver.getResources(avenueStackProperties.getConfDir() + "/*");
             for (Resource resource : resources) {
-                String path = resource.getFile().getPath();
+                String path = avenueStackProperties.getConfDir() + "/" + resource.getFilename();
+                this.getClass().getResourceAsStream("classpath:/" + resource.getFilename());
                 if (path.endsWith(".xml")) {
                     a.addAvenueXml(path);
                 }
